@@ -53,8 +53,8 @@ firebase deploy
 📞 Contact
 Vision24 Team - Prishtina, Kosovo
 
-Email: info@vision24.ks (Example)
+Email: aberisha85@hotmail.com
 
-Phone: +383 44 123 456
+Phone: +383 44 722 066
 
 © 2026 Vision24. All rights reserved. F
