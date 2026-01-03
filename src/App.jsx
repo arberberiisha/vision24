@@ -7,34 +7,26 @@ const App = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [lang, setLang] = useState('en');
 
-  // Form State - To capture user input
+  // Form State
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     city: 'Prishtina'
   });
 
-  // Update form values when user types
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // SEND TO WHATSAPP FUNCTION
   const handleOrderSubmit = (e) => {
-    e.preventDefault(); // Stop page refresh
-    
-    // 1. Create the message
+    e.preventDefault();
     const message = `Pershendetje Vision24! 👋%0A%0ADua te bej nje porosi:%0A---------------------------%0A🖼️ Modeli: ${selectedProduct}%0A👤 Emri: ${formData.name}%0A📍 Qyteti: ${formData.city}%0A📱 Tel: ${formData.phone}%0A---------------------------%0A%0AJu lutem me konfirmoni. Faleminderit!`;
-
-    // 2. Open WhatsApp
     const whatsappUrl = `https://wa.me/38344123456?text=${message}`;
-    
     window.open(whatsappUrl, '_blank');
     setIsOrderModalOpen(false);
   };
 
-  // FIX: Only lock scroll when Order Modal is open OR Menu is open
   useEffect(() => {
     if (isOrderModalOpen || isMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -211,11 +203,11 @@ const App = () => {
     <div className="min-h-screen bg-neutral-950 text-white font-sans selection:bg-cyan-500 selection:text-white pb-20 overflow-x-hidden">
       
       {/* --- Navigation --- */}
-      <nav className="fixed w-full z-40 bg-neutral-950/90 backdrop-blur-md border-b border-white/10">
+      {/* UPDATE: Conditional className. If Menu Open -> Transparent. If Closed -> Dark. */}
+      <nav className={`fixed w-full z-40 transition-colors duration-300 border-b ${isMenuOpen ? 'bg-transparent border-transparent' : 'bg-neutral-950/90 backdrop-blur-md border-white/10'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
-              {/* Logo */}
               <img src="/vision24Logo.png" alt="Vision24 Logo" className="h-8 w-auto object-contain" />
               <span className="text-xl md:text-2xl font-bold tracking-wide">Vision24</span>
             </div>
@@ -267,9 +259,10 @@ const App = () => {
           </div>
         </div>
 
-        {/* Mobile Full Screen Menu - FIXED: SOLID BACKGROUND */}
+        {/* Mobile Full Screen Menu */}
+        {/* HERE IS THE BLUR CONTROL: bg-black/60 and backdrop-blur-xl */}
         {isMenuOpen && (
-          <div className="fixed inset-0 z-30 bg-neutral-950 flex flex-col items-center justify-start pt-32 space-y-8 animate-in fade-in duration-200">
+          <div className="fixed inset-0 z-30 bg-black/60 backdrop-blur-xl flex flex-col items-center justify-start pt-32 space-y-8 animate-in fade-in duration-200">
             <a href="#features" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.features}</a>
             <a href="#products" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.models}</a>
             <a href="#quality" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.quality}</a>
@@ -516,7 +509,7 @@ const App = () => {
         <MessageCircle size={28} />
       </a>
 
-      {/* --- ORDER MODAL (UPDATED FOR WHATSAPP) --- */}
+      {/* --- ORDER MODAL --- */}
       {isOrderModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div 
