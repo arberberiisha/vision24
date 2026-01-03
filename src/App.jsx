@@ -1,9 +1,74 @@
 import React, { useState, useEffect } from 'react';
-import { Monitor, Wifi, Star, MapPin, ChevronRight, Menu, X, CheckCircle, Send, Globe, MessageCircle, Music, Cloud, Calendar } from 'lucide-react';
+import { Monitor, Wifi, Star, MapPin, ChevronRight, Menu, X, CheckCircle, Send, Globe, MessageCircle, Music, Cloud, Calendar, Power } from 'lucide-react';
+
+// --- NEW SUB-COMPONENT FOR INDIVIDUAL PRODUCT CARDS ---
+const ProductCard = ({ product, t, onOrder, btnTextOn, btnTextOff }) => {
+  const [isOn, setIsOn] = useState(false); // Start OFF by default
+
+  return (
+    <div className="group bg-neutral-900 rounded-2xl overflow-hidden border border-white/10 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-900/20 transition duration-300">
+      
+      {/* Image Container with Toggle Button */}
+      <div 
+        className="h-64 md:h-72 overflow-hidden relative bg-gray-800 cursor-pointer"
+        onClick={() => setIsOn(!isOn)}
+      >
+        {/* The Image Switcher */}
+        <img 
+          src={isOn ? product.imageOn : product.imageOff} 
+          alt={product.name} 
+          className="w-full h-full object-cover transition-opacity duration-700 ease-in-out"
+        />
+        
+        {/* Toggle Button (Centered at bottom of image) */}
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOn(!isOn);
+          }}
+          className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20 bg-white/90 hover:bg-cyan-400 text-black px-4 py-2 rounded-full text-xs font-bold shadow-xl flex items-center gap-1 transition-all active:scale-95"
+        >
+          <Power size={14} className={isOn ? "text-red-600" : "text-black"} />
+          {isOn ? btnTextOff : btnTextOn}
+        </button>
+
+        {/* Dynamic Tags */}
+        <div className="absolute top-4 left-4 bg-cyan-500 text-black px-3 py-1 rounded-full text-xs font-bold shadow-lg z-20">
+           {product.tag}
+        </div>
+        <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-sm font-bold border border-white/10 z-20">
+          {product.price}
+        </div>
+      </div>
+
+      {/* Product Details */}
+      <div className="p-6 md:p-8">
+        <h3 className="text-2xl font-bold mb-4">{product.name}</h3>
+        <ul className="space-y-3 mb-8">
+          {product.features.map((feat, i) => (
+            <li key={i} className="flex items-center text-gray-400 text-sm">
+              <CheckCircle size={16} className="mr-3 text-cyan-500 flex-shrink-0" /> {feat}
+            </li>
+          ))}
+        </ul>
+        <button 
+          onClick={() => onOrder(product.name)}
+          className="w-full py-4 rounded-xl bg-white text-black font-bold tracking-wide hover:bg-cyan-400 transition shadow-lg mt-4 active:scale-95"
+        >
+          {t.btn}
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  
+  // State for the Main Interface Preview
+  const [isMainMirrorActive, setIsMainMirrorActive] = useState(false);
+  
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [lang, setLang] = useState('en');
 
@@ -22,7 +87,7 @@ const App = () => {
   const handleOrderSubmit = (e) => {
     e.preventDefault();
     const message = `Pershendetje Vision24! 👋%0A%0ADua te bej nje porosi:%0A---------------------------%0A🖼️ Modeli: ${selectedProduct}%0A👤 Emri: ${formData.name}%0A📍 Qyteti: ${formData.city}%0A📱 Tel: ${formData.phone}%0A---------------------------%0A%0AJu lutem me konfirmoni. Faleminderit!`;
-    const whatsappUrl = `https://wa.me/38344722066?text=${message}`;
+    const whatsappUrl = `https://wa.me/38344123456?text=${message}`;
     window.open(whatsappUrl, '_blank');
     setIsOrderModalOpen(false);
   };
@@ -56,12 +121,14 @@ const App = () => {
         f3Desc: "Designed in Prishtina. We offer local installation, 2-year warranty, and 24/7 Albanian/English support."
       },
       interfaceSection: {
-        title: "Your Life. At a Glance.",
-        subtitle: "Customize your dashboard with widgets that matter to you.",
+        title: "Experience the Magic.",
+        subtitle: "Tap the button to test the display.",
         w1: "Weather",
         w2: "Calendar",
         w3: "Spotify",
-        w4: "News"
+        w4: "News",
+        btnOn: "Turn ON",
+        btnOff: "Turn OFF"
       },
       productsSection: {
         title: "The Collection",
@@ -92,21 +159,25 @@ const App = () => {
           name: "Vision24 Grand",
           price: "€650",
           features: ["32-inch Invisible Display", "True-Light™ LED System", "Watch YouTube/Netflix"],
-          image: "https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=800"
+          // UPDATED: Added ImageOFF property
+          imageOn: "/DifferentMirrorsOn.png",
+          imageOff: "/DifferentMirrorsOff.png" // Ensure this filename matches your folder!
         },
         {
           id: 2,
           name: "Vision24 Vanity",
           price: "€450",
           features: ["Smart Weather & News", "Anti-Fog Technology", "Dimmable Front Light"],
-          image: "https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&q=80&w=800"
+          imageOn: "/BigMirrorOn.png",
+          imageOff: "/BigMirrorOff.png"
         },
         {
           id: 3,
           name: "Vision24 Signature",
           price: "€390",
           features: ["Emër i Ndriçuar Personal", "Ekran Smart 24-inç", "Ideale për Fëmijë/Dhurata"],
-          image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=800"
+          imageOn: "/CostumizeMirrorOn.png",
+          imageOff: "/CostumizeMirrorOff.png"
         }
       ]
     },
@@ -130,12 +201,14 @@ const App = () => {
         f3Desc: "Dizajnuar në Prishtinë. Ne ofrojmë instalim lokal, garanci 2-vjeçare dhe mbështetje 24/7 në Shqip/Anglisht."
       },
       interfaceSection: {
-        title: "Jeta Juaj. Në Një Shikim.",
-        subtitle: "Personalizoni ekranin me informacionet që ju duhen.",
+        title: "Provojeni Magjinë.",
+        subtitle: "Shtypni butonin më poshtë për ta ndezur.",
         w1: "Moti",
         w2: "Kalendari",
         w3: "Spotify",
-        w4: "Lajmet"
+        w4: "Lajmet",
+        btnOn: "Ndeze",
+        btnOff: "Fike"
       },
       productsSection: {
         title: "Koleksioni",
@@ -166,33 +239,41 @@ const App = () => {
           name: "Vision24 Grand",
           price: "€650",
           features: ["32-inch Ekran i Padukshëm", "Sistem LED True-Light™", "Shiko YouTube/Netflix"],
-          image: "https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=800"
+          imageOn: "/DifferentMirrorsOn.png",
+          imageOff: "/DifferentMirrorsOff.png"
         },
         {
           id: 2,
           name: "Vision24 Vanity",
           price: "€450",
           features: ["Moti & Lajmet Inteligjente", "Teknologji Anti-Mjegull", "Dritë e Përparme e Rregullueshme"],
-          image: "https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&q=80&w=800"
+          imageOn: "/BigMirrorOn.png",
+          imageOff: "/BigMirrorOff.png"
         },
         {
           id: 3,
           name: "Vision24 Signature",
           price: "€390",
           features: ["Emër i Ndriçuar Personal", "Ekran Smart 24-inç", "Ideale për Fëmijë/Dhurata"],
-          image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=800"
+          imageOn: "/CostumizeMirrorOn.png",
+          imageOff: "/CostumizeMirrorOff.png"
         }
       ]
     }
   };
 
   const t = content[lang];
-  const products = t.productsList;
+  
+  // Inject tags and text into product list for the component
+  const productsWithTags = t.productsList.map((p, index) => ({
+    ...p,
+    tag: index === 0 ? t.productsSection.tag1 : index === 1 ? t.productsSection.tag2 : t.productsSection.tag3
+  }));
 
   const openOrderForm = (productName) => {
     setSelectedProduct(productName);
     setIsOrderModalOpen(true);
-    setIsMenuOpen(false); // Close menu if opening from mobile nav
+    setIsMenuOpen(false); 
   };
 
   const toggleLang = () => {
@@ -203,7 +284,6 @@ const App = () => {
     <div className="min-h-screen bg-neutral-950 text-white font-sans selection:bg-cyan-500 selection:text-white pb-20 overflow-x-hidden">
       
       {/* --- Navigation --- */}
-      {/* UPDATE: Conditional className. If Menu Open -> Transparent. If Closed -> Dark. */}
       <nav className={`fixed w-full z-40 transition-colors duration-300 border-b ${isMenuOpen ? 'bg-transparent border-transparent' : 'bg-neutral-950/90 backdrop-blur-md border-white/10'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -212,7 +292,6 @@ const App = () => {
               <span className="text-xl md:text-2xl font-bold tracking-wide">Vision24</span>
             </div>
             
-            {/* Desktop Menu */}
             <div className="hidden md:flex space-x-8 items-center">
               <a href="#features" className="text-gray-300 hover:text-white transition text-sm font-medium">{t.nav.features}</a>
               <a href="#products" className="text-gray-300 hover:text-white transition text-sm font-medium">{t.nav.models}</a>
@@ -233,7 +312,6 @@ const App = () => {
               </button>
             </div>
 
-            {/* Mobile Menu Toggle */}
             <div className="md:hidden flex items-center gap-4">
                <button 
                 onClick={toggleLang}
@@ -259,8 +337,7 @@ const App = () => {
           </div>
         </div>
 
-        {/* Mobile Full Screen Menu */}
-        {/* HERE IS THE BLUR CONTROL: bg-black/60 and backdrop-blur-xl */}
+        {/* Mobile Full Screen Menu - WITH BLUR */}
         {isMenuOpen && (
           <div className="fixed inset-0 z-30 bg-black/60 backdrop-blur-xl flex flex-col items-center justify-start pt-32 space-y-8 animate-in fade-in duration-200">
             <a href="#features" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.features}</a>
@@ -327,79 +404,45 @@ const App = () => {
         </div>
       </section>
 
-      {/* --- Interface / OS Preview --- */}
+      {/* --- Interface / OS Preview (INTERACTIVE MAGIC SWITCH) --- */}
       <section className="py-16 md:py-24 bg-neutral-950 overflow-hidden border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 text-center mb-10 md:mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">{t.interfaceSection.title}</h2>
-          <p className="text-gray-400">{t.interfaceSection.subtitle}</p>
+          <p className="text-gray-400 mb-6">{t.interfaceSection.subtitle}</p>
         </div>
 
-        {/* The Mirror UI Mockup */}
-        <div className="relative max-w-sm md:max-w-4xl mx-auto bg-neutral-900 rounded-[2rem] border-8 border-neutral-800 p-1 md:p-2 shadow-2xl">
+        {/* INTERACTIVE MIRROR CONTAINER */}
+        <div 
+           className="relative max-w-sm md:max-w-4xl mx-auto bg-neutral-900 rounded-[2rem] border-8 border-neutral-800 p-1 md:p-2 shadow-2xl group"
+           onClick={() => setIsMainMirrorActive(!isMainMirrorActive)} // Click anywhere still works
+        >
           {/* Reflection Effect */}
           <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent z-10 pointer-events-none rounded-[1.5rem]"></div>
           
-          <div className="bg-black/80 rounded-[1.5rem] p-6 md:p-12 h-[450px] md:h-[600px] relative flex flex-col justify-between overflow-hidden">
-            {/* Background Image (The Reflection) */}
+          {/* VISIBLE TOGGLE BUTTON */}
+          <button 
+            onClick={(e) => {
+              e.stopPropagation(); // Prevents clicking the container twice
+              setIsMainMirrorActive(!isMainMirrorActive);
+            }}
+            className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-40 bg-white hover:bg-cyan-400 text-black px-6 py-3 rounded-full font-bold shadow-2xl flex items-center gap-2 transition-all active:scale-95"
+          >
+            <Power size={20} className={isMainMirrorActive ? "text-red-600" : "text-black"} />
+            {isMainMirrorActive ? t.interfaceSection.btnOff : t.interfaceSection.btnOn}
+          </button>
+
+          <div className="bg-black rounded-[1.5rem] h-[450px] md:h-[600px] relative overflow-hidden cursor-pointer">
+            {/* THE MAGIC IMAGE SWITCH */}
             <img 
-               src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1000" 
-               className="absolute inset-0 w-full h-full object-cover opacity-30 blur-[2px]" 
-               alt="Reflection"
+               src={isMainMirrorActive ? "/BigMirrorOn.png" : "/BigMirrorOff.png"} 
+               className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out" 
+               alt="Vision24 Mirror Interface"
             />
-
-            {/* UI Widgets Top */}
-            <div className="relative z-20 flex justify-between items-start text-white">
-              <div className="text-left">
-                <h3 className="text-5xl md:text-6xl font-thin tracking-tighter mb-1">08:24</h3>
-                <p className="text-lg md:text-xl font-medium text-cyan-300">Monday, Jan 24</p>
-                <div className="mt-4 md:mt-6 flex items-center gap-3 bg-black/40 backdrop-blur-md p-3 rounded-xl border border-white/10 w-fit">
-                   <div className="text-yellow-400"><Cloud size={20} fill="currentColor" /></div>
-                   <div>
-                     <p className="text-xs md:text-sm font-bold">{t.interfaceSection.w1}</p>
-                     <p className="text-[10px] md:text-xs text-gray-300">Prishtina, -2°C</p>
-                   </div>
-                </div>
-              </div>
-
-              {/* Hide Calendar on very small screens, show on md+ */}
-              <div className="text-right hidden md:block">
-                 <div className="bg-black/40 backdrop-blur-md p-4 rounded-xl border border-white/10 w-64">
-                    <div className="flex items-center gap-2 mb-2 text-cyan-400">
-                        <Calendar size={16} />
-                        <p className="text-sm font-bold">{t.interfaceSection.w2}</p>
-                    </div>
-                    <div className="space-y-3 text-sm">
-                      <div className="flex justify-between"><span>09:00</span> <span className="text-gray-400">Meeting</span></div>
-                      <div className="flex justify-between"><span>13:30</span> <span className="text-gray-400">Gym</span></div>
-                    </div>
-                 </div>
-              </div>
-            </div>
-
-            {/* UI Widgets Bottom */}
-            <div className="relative z-20 flex justify-center pb-4 md:pb-0">
-               <div className="bg-black/40 backdrop-blur-md px-6 py-3 md:py-4 rounded-full border border-white/10 flex items-center gap-6">
-                 <div className="flex flex-col items-center gap-1 cursor-pointer hover:text-cyan-400 transition">
-                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-green-500 flex items-center justify-center text-black font-bold">
-                        <Music size={18} />
-                    </div>
-                    <span className="text-[10px] md:text-xs">{t.interfaceSection.w3}</span>
-                 </div>
-                 <div className="w-px h-6 md:h-8 bg-white/20"></div>
-                 <div className="flex flex-col items-center gap-1 cursor-pointer hover:text-cyan-400 transition">
-                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-                        <Globe size={18} />
-                    </div>
-                    <span className="text-[10px] md:text-xs">{t.interfaceSection.w4}</span>
-                 </div>
-               </div>
-            </div>
-
           </div>
         </div>
       </section>
 
-      {/* --- Product Showcase --- */}
+      {/* --- Product Showcase (NOW WITH INDIVIDUAL TOGGLES) --- */}
       <section id="products" className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -408,39 +451,15 @@ const App = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {products.map((product, idx) => (
-              <div key={product.id} className="group bg-neutral-900 rounded-2xl overflow-hidden border border-white/10 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-900/20 transition duration-300">
-                <div className="h-64 md:h-72 overflow-hidden relative bg-gray-800">
-                  <img 
-                    src={product.image} 
-                    alt={product.name} 
-                    className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transform group-hover:scale-105 transition duration-700"
-                  />
-                  {/* Dynamic Tags */}
-                  <div className="absolute top-4 left-4 bg-cyan-500 text-black px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                     {idx === 0 ? t.productsSection.tag1 : idx === 1 ? t.productsSection.tag2 : t.productsSection.tag3}
-                  </div>
-                  <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-sm font-bold border border-white/10">
-                    {product.price}
-                  </div>
-                </div>
-                <div className="p-6 md:p-8">
-                  <h3 className="text-2xl font-bold mb-4">{product.name}</h3>
-                  <ul className="space-y-3 mb-8">
-                    {product.features.map((feat, i) => (
-                      <li key={i} className="flex items-center text-gray-400 text-sm">
-                        <CheckCircle size={16} className="mr-3 text-cyan-500 flex-shrink-0" /> {feat}
-                      </li>
-                    ))}
-                  </ul>
-                  <button 
-                    onClick={() => openOrderForm(product.name)}
-                    className="w-full py-4 rounded-xl bg-white text-black font-bold tracking-wide hover:bg-cyan-400 transition shadow-lg mt-4 active:scale-95"
-                  >
-                    {t.productsSection.btn}
-                  </button>
-                </div>
-              </div>
+            {productsWithTags.map((product) => (
+              <ProductCard 
+                key={product.id}
+                product={product}
+                t={t.productsSection}
+                onOrder={openOrderForm}
+                btnTextOn={t.interfaceSection.btnOn}
+                btnTextOff={t.interfaceSection.btnOff}
+              />
             ))}
           </div>
         </div>
@@ -489,7 +508,7 @@ const App = () => {
                  <span className="text-2xl font-bold text-white tracking-wide">Vision24</span>
              </div>
             <p className="text-gray-500 text-sm mt-2">Prishtina, Kosovo</p>
-            <p className="text-gray-500 text-sm">+383 44 722 066</p>
+            <p className="text-gray-500 text-sm">+383 44 123 456</p>
           </div>
           <div className="flex space-x-8 justify-center">
             <a href="#" className="text-gray-400 hover:text-cyan-400 transition">Instagram</a>
@@ -501,7 +520,7 @@ const App = () => {
 
       {/* --- Floating WhatsApp Button --- */}
       <a 
-        href="https://wa.me/38344722066" 
+        href="https://wa.me/38344123456" 
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-3 md:p-4 rounded-full shadow-2xl transition-transform hover:scale-110 flex items-center justify-center border-4 border-neutral-900 active:scale-90"
@@ -552,7 +571,7 @@ const App = () => {
                   onChange={handleInputChange}
                   required
                   className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition" 
-                  placeholder="044 722 066" 
+                  placeholder="044 123 123" 
                 />
               </div>
 
