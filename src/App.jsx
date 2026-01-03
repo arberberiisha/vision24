@@ -87,7 +87,7 @@ const App = () => {
           id: 3,
           name: "Vision24 Wardrobe",
           price: "€890",
-          features: ["Full Height Glass", "Daily Outfit Planner", "Fitness/Gym Widget"],
+          features: ["Xham me Lartësi të Plotë", "Planifikues i Veshjes Ditore", "Widget për Fitness/Gym"],
           image: "https://images.unsplash.com/photo-1618219944342-824e40a13285?auto=format&fit=crop&q=80&w=800"
         }
       ]
@@ -242,9 +242,9 @@ const App = () => {
         </div>
 
         {/* Mobile Full Screen Menu */}
-        {/* FIX: justify-start and pt-32 ensures items are below the logo */}
+        {/* UPDATED: bg-neutral-950/90 (90% opacity) and backdrop-blur-md */}
         {isMenuOpen && (
-          <div className="fixed inset-0 z-30 bg-neutral-950 flex flex-col items-center justify-start pt-32 space-y-8 animate-in fade-in duration-200">
+          <div className="fixed inset-0 z-30 bg-neutral-950/90 backdrop-blur-md flex flex-col items-center justify-start pt-32 space-y-8 animate-in fade-in duration-200">
             <a href="#features" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.features}</a>
             <a href="#products" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.models}</a>
             <a href="#quality" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.quality}</a>
