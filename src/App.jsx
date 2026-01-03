@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Monitor, Wifi, Star, MapPin, ChevronRight, Menu, X, CheckCircle, Send, Globe, MessageCircle, Music, Cloud, Calendar } from 'lucide-react';
 
 const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [lang, setLang] = useState('en'); // 'en' or 'sq'
+  const [lang, setLang] = useState('en');
 
-  // --- TRANSLATIONS / PËRKTHIMET ---
+  // Lock body scroll when menu/modal is open
+  useEffect(() => {
+    if (isMenuOpen || isOrderModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [isMenuOpen, isOrderModalOpen]);
+
   const content = {
     en: {
       nav: { features: "Features", models: "Models", quality: "Quality", getStarted: "Get Started" },
@@ -165,6 +173,7 @@ const App = () => {
   const openOrderForm = (productName) => {
     setSelectedProduct(productName);
     setIsOrderModalOpen(true);
+    setIsMenuOpen(false); // Close menu if opening from mobile nav
   };
 
   const toggleLang = () => {
@@ -172,24 +181,24 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white font-sans selection:bg-cyan-500 selection:text-white pb-20">
+    <div className="min-h-screen bg-neutral-950 text-white font-sans selection:bg-cyan-500 selection:text-white pb-20 overflow-x-hidden">
       
       {/* --- Navigation --- */}
       <nav className="fixed w-full z-40 bg-neutral-950/80 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
-              {/* LOGO IMAGE HERE */}
-              <img src="/vision24Logo.png" alt="Vision24 Logo" className="h-10 w-auto object-contain" />
-              {/* <span className="text-2xl font-bold tracking-wide"></span> */}
+              {/* Logo */}
+              <img src="/vision24Logo.png" alt="Vision24 Logo" className="h-8 w-auto object-contain" />
+              <span className="text-xl md:text-2xl font-bold tracking-wide">Vision24</span>
             </div>
             
+            {/* Desktop Menu */}
             <div className="hidden md:flex space-x-8 items-center">
-              <a href="#features" className="text-gray-300 hover:text-white transition">{t.nav.features}</a>
-              <a href="#products" className="text-gray-300 hover:text-white transition">{t.nav.models}</a>
-              <a href="#quality" className="text-gray-300 hover:text-white transition">{t.nav.quality}</a>
+              <a href="#features" className="text-gray-300 hover:text-white transition text-sm font-medium">{t.nav.features}</a>
+              <a href="#products" className="text-gray-300 hover:text-white transition text-sm font-medium">{t.nav.models}</a>
+              <a href="#quality" className="text-gray-300 hover:text-white transition text-sm font-medium">{t.nav.quality}</a>
               
-              {/* Language Switcher Desktop */}
               <button 
                 onClick={toggleLang}
                 className="flex items-center gap-2 text-sm font-medium border border-white/20 px-3 py-1 rounded-full hover:bg-white/10 transition"
@@ -205,55 +214,55 @@ const App = () => {
               </button>
             </div>
 
+            {/* Mobile Menu Toggle */}
             <div className="md:hidden flex items-center gap-4">
-               {/* Language Switcher Mobile */}
                <button 
                 onClick={toggleLang}
-                className="flex items-center gap-1 text-sm font-medium border border-white/20 px-2 py-1 rounded-full"
+                className="flex items-center gap-1 text-xs font-bold border border-white/20 px-2 py-1 rounded-full"
               >
-                <Globe size={14} /> {lang.toUpperCase()}
+                {lang.toUpperCase()}
               </button>
 
-              <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white">
+              <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white p-2">
                 {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
             </div>
           </div>
         </div>
 
+        {/* Mobile Full Screen Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-neutral-900 border-b border-white/10">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-              <a href="#features" className="block px-3 py-2 text-gray-300">{t.nav.features}</a>
-              <a href="#products" className="block px-3 py-2 text-gray-300">{t.nav.models}</a>
-              <button 
-                 onClick={() => { openOrderForm('General Inquiry'); setIsMenuOpen(false); }}
-                 className="block w-full text-left px-3 py-2 text-cyan-400 font-bold"
-              >
-                {t.nav.getStarted}
-              </button>
-            </div>
+          <div className="fixed inset-0 z-30 bg-neutral-950 flex flex-col items-center justify-center space-y-8 animate-in fade-in duration-200">
+            <a href="#features" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300">{t.nav.features}</a>
+            <a href="#products" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300">{t.nav.models}</a>
+            <a href="#quality" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300">{t.nav.quality}</a>
+            <button 
+               onClick={() => openOrderForm('General Inquiry')}
+               className="text-xl bg-cyan-500 text-black px-8 py-3 rounded-full font-bold"
+            >
+              {t.nav.getStarted}
+            </button>
           </div>
         )}
       </nav>
 
       {/* --- Hero Section --- */}
-      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-[120px] -z-10 opacity-50"></div>
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[120px] -z-10 opacity-50"></div>
+      <section className="relative pt-32 pb-16 lg:pt-48 lg:pb-32 px-4 overflow-hidden">
+        <div className="absolute top-0 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-cyan-500/20 rounded-full blur-[80px] md:blur-[120px] -z-10 opacity-50"></div>
+        <div className="absolute bottom-0 left-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-purple-500/20 rounded-full blur-[80px] md:blur-[120px] -z-10 opacity-50"></div>
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 text-sm mb-8 font-medium">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="inline-flex items-center px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 text-xs md:text-sm mb-6 font-medium">
             <Star size={14} className="mr-2" /> {t.hero.badge}
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8">
+          <h1 className="text-4xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
             {t.hero.title1} <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">{t.hero.title2}</span>
           </h1>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+          <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-8 leading-relaxed px-4">
             {t.hero.subtitle}
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-4 px-4">
             <a href="#products" className="bg-white text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-200 transition flex items-center justify-center">
               {t.hero.cta1} <ChevronRight className="ml-2" size={20} />
             </a>
@@ -262,13 +271,13 @@ const App = () => {
       </section>
 
       {/* --- Features Grid --- */}
-      <section id="features" className="py-24 bg-neutral-900/30 border-y border-white/5">
+      <section id="features" className="py-16 md:py-24 bg-neutral-900/30 border-y border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">{t.featuresSection.title}</h2>
-            <p className="text-gray-400">{t.featuresSection.subtitle}</p>
+            <p className="text-gray-400 px-4">{t.featuresSection.subtitle}</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
             <FeatureCard 
               icon={<Monitor className="text-cyan-400" size={32} />}
               title={t.featuresSection.f1Title}
@@ -289,18 +298,18 @@ const App = () => {
       </section>
 
       {/* --- Interface / OS Preview --- */}
-      <section className="py-24 bg-neutral-950 overflow-hidden border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-4 text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4">{t.interfaceSection.title}</h2>
+      <section className="py-16 md:py-24 bg-neutral-950 overflow-hidden border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-4 text-center mb-10 md:mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t.interfaceSection.title}</h2>
           <p className="text-gray-400">{t.interfaceSection.subtitle}</p>
         </div>
 
         {/* The Mirror UI Mockup */}
-        <div className="relative max-w-4xl mx-auto bg-neutral-900 rounded-3xl border-8 border-neutral-800 p-2 shadow-2xl">
+        <div className="relative max-w-sm md:max-w-4xl mx-auto bg-neutral-900 rounded-[2rem] border-8 border-neutral-800 p-1 md:p-2 shadow-2xl">
           {/* Reflection Effect */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent z-10 pointer-events-none rounded-2xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent z-10 pointer-events-none rounded-[1.5rem]"></div>
           
-          <div className="bg-black/80 rounded-2xl p-8 md:p-12 h-[500px] md:h-[600px] relative flex flex-col justify-between overflow-hidden">
+          <div className="bg-black/80 rounded-[1.5rem] p-6 md:p-12 h-[450px] md:h-[600px] relative flex flex-col justify-between overflow-hidden">
             {/* Background Image (The Reflection) */}
             <img 
                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1000" 
@@ -311,17 +320,18 @@ const App = () => {
             {/* UI Widgets Top */}
             <div className="relative z-20 flex justify-between items-start text-white">
               <div className="text-left">
-                <h3 className="text-6xl font-thin tracking-tighter mb-2">08:24</h3>
-                <p className="text-xl font-medium text-cyan-300">Monday, January 24</p>
-                <div className="mt-6 flex items-center gap-3 bg-black/40 backdrop-blur-md p-3 rounded-xl border border-white/10 w-fit">
+                <h3 className="text-5xl md:text-6xl font-thin tracking-tighter mb-1">08:24</h3>
+                <p className="text-lg md:text-xl font-medium text-cyan-300">Monday, Jan 24</p>
+                <div className="mt-4 md:mt-6 flex items-center gap-3 bg-black/40 backdrop-blur-md p-3 rounded-xl border border-white/10 w-fit">
                    <div className="text-yellow-400"><Cloud size={20} fill="currentColor" /></div>
                    <div>
-                     <p className="text-sm font-bold">{t.interfaceSection.w1}</p>
-                     <p className="text-xs text-gray-300">Prishtina, -2°C</p>
+                     <p className="text-xs md:text-sm font-bold">{t.interfaceSection.w1}</p>
+                     <p className="text-[10px] md:text-xs text-gray-300">Prishtina, -2°C</p>
                    </div>
                 </div>
               </div>
 
+              {/* Hide Calendar on very small screens, show on md+ */}
               <div className="text-right hidden md:block">
                  <div className="bg-black/40 backdrop-blur-md p-4 rounded-xl border border-white/10 w-64">
                     <div className="flex items-center gap-2 mb-2 text-cyan-400">
@@ -331,27 +341,26 @@ const App = () => {
                     <div className="space-y-3 text-sm">
                       <div className="flex justify-between"><span>09:00</span> <span className="text-gray-400">Meeting</span></div>
                       <div className="flex justify-between"><span>13:30</span> <span className="text-gray-400">Gym</span></div>
-                      <div className="flex justify-between"><span>19:00</span> <span className="text-gray-400">Dinner</span></div>
                     </div>
                  </div>
               </div>
             </div>
 
             {/* UI Widgets Bottom */}
-            <div className="relative z-20 flex justify-center">
-               <div className="bg-black/40 backdrop-blur-md px-6 py-4 rounded-full border border-white/10 flex items-center gap-6">
+            <div className="relative z-20 flex justify-center pb-4 md:pb-0">
+               <div className="bg-black/40 backdrop-blur-md px-6 py-3 md:py-4 rounded-full border border-white/10 flex items-center gap-6">
                  <div className="flex flex-col items-center gap-1 cursor-pointer hover:text-cyan-400 transition">
-                    <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-black font-bold">
-                        <Music size={20} />
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-green-500 flex items-center justify-center text-black font-bold">
+                        <Music size={18} />
                     </div>
-                    <span className="text-xs">{t.interfaceSection.w3}</span>
+                    <span className="text-[10px] md:text-xs">{t.interfaceSection.w3}</span>
                  </div>
-                 <div className="w-px h-8 bg-white/20"></div>
+                 <div className="w-px h-6 md:h-8 bg-white/20"></div>
                  <div className="flex flex-col items-center gap-1 cursor-pointer hover:text-cyan-400 transition">
-                    <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-                        <Globe size={20} />
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                        <Globe size={18} />
                     </div>
-                    <span className="text-xs">{t.interfaceSection.w4}</span>
+                    <span className="text-[10px] md:text-xs">{t.interfaceSection.w4}</span>
                  </div>
                </div>
             </div>
@@ -361,17 +370,17 @@ const App = () => {
       </section>
 
       {/* --- Product Showcase --- */}
-      <section id="products" className="py-24">
+      <section id="products" className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">{t.productsSection.title}</h2>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">{t.productsSection.title}</h2>
             <p className="text-gray-400">{t.productsSection.subtitle}</p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {products.map((product, idx) => (
               <div key={product.id} className="group bg-neutral-900 rounded-2xl overflow-hidden border border-white/10 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-900/20 transition duration-300">
-                <div className="h-72 overflow-hidden relative bg-gray-800">
+                <div className="h-64 md:h-72 overflow-hidden relative bg-gray-800">
                   <img 
                     src={product.image} 
                     alt={product.name} 
@@ -385,18 +394,18 @@ const App = () => {
                     {product.price}
                   </div>
                 </div>
-                <div className="p-8">
+                <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-bold mb-4">{product.name}</h3>
                   <ul className="space-y-3 mb-8">
                     {product.features.map((feat, i) => (
-                      <li key={i} className="flex items-center text-gray-400">
-                        <CheckCircle size={16} className="mr-3 text-cyan-500" /> {feat}
+                      <li key={i} className="flex items-center text-gray-400 text-sm">
+                        <CheckCircle size={16} className="mr-3 text-cyan-500 flex-shrink-0" /> {feat}
                       </li>
                     ))}
                   </ul>
                   <button 
                     onClick={() => openOrderForm(product.name)}
-                    className="w-full py-4 rounded-xl bg-white text-black font-bold tracking-wide hover:bg-cyan-400 transition shadow-lg mt-4"
+                    className="w-full py-4 rounded-xl bg-white text-black font-bold tracking-wide hover:bg-cyan-400 transition shadow-lg mt-4 active:scale-95"
                   >
                     {t.productsSection.btn}
                   </button>
@@ -408,10 +417,10 @@ const App = () => {
       </section>
 
       {/* --- Quality Assurance --- */}
-      <section id="quality" className="py-24 bg-white text-black">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center gap-16">
+      <section id="quality" className="py-16 md:py-24 bg-white text-black">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center gap-12 md:gap-16">
           <div className="md:w-1/2">
-            <h2 className="text-4xl font-bold mb-6">{t.qualitySection.title}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">{t.qualitySection.title}</h2>
             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
               {t.qualitySection.p1}
             </p>
@@ -420,11 +429,11 @@ const App = () => {
             </p>
             <div className="flex gap-8">
                <div>
-                 <h4 className="text-3xl font-bold text-cyan-600">2 Year</h4>
+                 <h4 className="text-2xl md:text-3xl font-bold text-cyan-600">2 Year</h4>
                  <p className="text-gray-600 font-medium">{t.qualitySection.warranty}</p>
                </div>
                <div>
-                 <h4 className="text-3xl font-bold text-cyan-600">100%</h4>
+                 <h4 className="text-2xl md:text-3xl font-bold text-cyan-600">100%</h4>
                  <p className="text-gray-600 font-medium">{t.qualitySection.satisfaction}</p>
                </div>
             </div>
@@ -441,15 +450,15 @@ const App = () => {
       </section>
 
       {/* --- Footer --- */}
-      <footer className="py-12 bg-neutral-950 border-t border-white/10 text-center md:text-left">
+      <footer className="py-12 bg-neutral-950 border-t border-white/10 text-center md:text-left mb-16 md:mb-0">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-          <div className="mb-6 md:mb-0">
-             {/* LOGO IMAGE HERE TOO */}
+          <div className="mb-8 md:mb-0">
+             {/* Logo */}
              <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
                  <img src="/vision24Logo.png" alt="Vision24 Logo" className="h-8 w-auto object-contain" />
                  <span className="text-2xl font-bold text-white tracking-wide">Vision24</span>
              </div>
-            <p className="text-gray-500 text-sm mt-2">Prishtina, Kosova</p>
+            <p className="text-gray-500 text-sm mt-2">Prishtina, Kosovo</p>
             <p className="text-gray-500 text-sm">+383 44 123 456</p>
           </div>
           <div className="flex space-x-8 justify-center">
@@ -462,12 +471,12 @@ const App = () => {
 
       {/* --- Floating WhatsApp Button --- */}
       <a 
-        href="https://wa.me/38344123456" // Replace with your actual number
+        href="https://wa.me/38344123456" 
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-transform hover:scale-110 flex items-center justify-center border-4 border-neutral-900"
+        className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-3 md:p-4 rounded-full shadow-2xl transition-transform hover:scale-110 flex items-center justify-center border-4 border-neutral-900 active:scale-90"
       >
-        <MessageCircle size={32} />
+        <MessageCircle size={28} />
       </a>
 
       {/* --- ORDER MODAL --- */}
@@ -477,33 +486,33 @@ const App = () => {
             className="absolute inset-0 bg-black/80 backdrop-blur-sm"
             onClick={() => setIsOrderModalOpen(false)}
           ></div>
-          <div className="bg-neutral-900 border border-white/10 rounded-2xl p-8 max-w-md w-full relative z-10 shadow-2xl">
+          <div className="bg-neutral-900 border border-white/10 rounded-2xl p-6 md:p-8 w-full max-w-md relative z-10 shadow-2xl animate-in fade-in zoom-in duration-200">
             <button 
               onClick={() => setIsOrderModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              className="absolute top-4 right-4 text-gray-400 hover:text-white p-2"
             >
               <X size={24} />
             </button>
             
-            <h3 className="text-2xl font-bold mb-2">{t.form.title}: {selectedProduct}</h3>
-            <p className="text-gray-400 mb-6 text-sm">
+            <h3 className="text-xl md:text-2xl font-bold mb-2 pr-8">{t.form.title}: <span className="text-cyan-400">{selectedProduct}</span></h3>
+            <p className="text-gray-400 mb-6 text-xs md:text-sm leading-relaxed">
               {t.form.desc}
             </p>
             
             <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">{t.form.name}</label>
-                <input type="text" className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500" placeholder="Agim Gashi" />
+                <input type="text" className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="Agim Gashi" />
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">{t.form.phone}</label>
-                <input type="tel" className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500" placeholder="044 123 123" />
+                <input type="tel" className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="044 123 123" />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">{t.form.city}</label>
-                <select className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500">
+                <select className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition">
                   <option>Prishtina</option>
                   <option>Prizren</option>
                   <option>Peja</option>
@@ -515,7 +524,7 @@ const App = () => {
                 </select>
               </div>
 
-              <button className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-4 rounded-xl mt-4 flex items-center justify-center gap-2 transition">
+              <button className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-4 rounded-xl mt-4 flex items-center justify-center gap-2 transition active:scale-95 shadow-lg shadow-cyan-500/20">
                 <Send size={18} /> {t.form.btn}
               </button>
             </form>
@@ -527,14 +536,13 @@ const App = () => {
   );
 };
 
-// Helper Component
 const FeatureCard = ({ icon, title, desc }) => (
-  <div className="p-8 rounded-2xl bg-neutral-900 border border-white/5 hover:border-cyan-500/30 transition duration-300">
-    <div className="mb-6 bg-neutral-950 w-14 h-14 rounded-xl flex items-center justify-center border border-white/10 shadow-lg">
+  <div className="p-6 md:p-8 rounded-2xl bg-neutral-900 border border-white/5 hover:border-cyan-500/30 transition duration-300">
+    <div className="mb-4 md:mb-6 bg-neutral-950 w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center border border-white/10 shadow-lg">
       {icon}
     </div>
-    <h3 className="text-xl font-bold mb-3">{title}</h3>
-    <p className="text-gray-400 leading-relaxed">{desc}</p>
+    <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3">{title}</h3>
+    <p className="text-sm md:text-base text-gray-400 leading-relaxed">{desc}</p>
   </div>
 );
 
