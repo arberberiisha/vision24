@@ -1,0 +1,541 @@
+import React, { useState } from 'react';
+import { Monitor, Wifi, Star, MapPin, ChevronRight, Menu, X, CheckCircle, Send, Globe, MessageCircle, Music, Cloud, Calendar } from 'lucide-react';
+
+const App = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [lang, setLang] = useState('en'); // 'en' or 'sq'
+
+  // --- TRANSLATIONS / PËRKTHIMET ---
+  const content = {
+    en: {
+      nav: { features: "Features", models: "Models", quality: "Quality", getStarted: "Get Started" },
+      hero: {
+        badge: "#1 Smart Mirror Brand in Kosova",
+        title1: "See More Than Just",
+        title2: "Your Reflection.",
+        subtitle: "Vision24 brings the future to your home. High-definition information displays hidden behind premium, European-standard mirror glass.",
+        cta1: "Find Your Mirror",
+      },
+      featuresSection: {
+        title: "Technology That Disappears.",
+        subtitle: "Smart when you need it. A perfect mirror when you don't.",
+        f1Title: "Vanishing Display",
+        f1Desc: "Unlike cheap mirrors, our screen is completely invisible when turned off. No grey borders, just pure reflection.",
+        f2Title: "Bathroom Ready (IP65)",
+        f2Desc: "Engineered to withstand humidity and steam. Perfect for your shower or vanity area without risk.",
+        f3Title: "Made for Kosova",
+        f3Desc: "Designed in Prishtina. We offer local installation, 2-year warranty, and 24/7 Albanian/English support."
+      },
+      interfaceSection: {
+        title: "Your Life. At a Glance.",
+        subtitle: "Customize your dashboard with widgets that matter to you.",
+        w1: "Weather",
+        w2: "Calendar",
+        w3: "Spotify",
+        w4: "News"
+      },
+      productsSection: {
+        title: "The Collection",
+        subtitle: "Choose the style that fits your space.",
+        btn: "Customize & Order",
+        tag1: "Best Seller",
+        tag2: "Perfect for Makeup",
+        tag3: "Full Body"
+      },
+      qualitySection: {
+        title: "Why Vision24 is Different.",
+        p1: "Cheap imports use standard glass which makes the display look 'washed out' or gray. Vision24 uses premium dielectric mirror glass.",
+        p2: "When the display is off, it looks exactly like a luxury mirror. When it's on, the information floats magically on the surface.",
+        warranty: "Local Warranty",
+        satisfaction: "Satisfaction"
+      },
+      form: {
+        title: "Order",
+        desc: "Fill out the form below. We will call you within 24 hours to confirm delivery details. Payment is upon delivery.",
+        name: "Full Name",
+        phone: "Phone Number (+383)",
+        city: "City",
+        btn: "Submit Order Request"
+      },
+      productsList: [
+        {
+          id: 1,
+          name: "Vision24 Grand",
+          price: "€650",
+          features: ["32-inch Invisible Display", "True-Light™ LED System", "Watch YouTube/Netflix"],
+          image: "https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=800"
+        },
+        {
+          id: 2,
+          name: "Vision24 Vanity",
+          price: "€450",
+          features: ["Smart Weather & News", "Anti-Fog Technology", "Dimmable Front Light"],
+          image: "https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&q=80&w=800"
+        },
+        {
+          id: 3,
+          name: "Vision24 Wardrobe",
+          price: "€890",
+          features: ["Full Height Glass", "Daily Outfit Planner", "Fitness/Gym Widget"],
+          image: "https://images.unsplash.com/photo-1618219944342-824e40a13285?auto=format&fit=crop&q=80&w=800"
+        }
+      ]
+    },
+    sq: {
+      nav: { features: "Veçoritë", models: "Modelet", quality: "Cilësia", getStarted: "Fillo Tani" },
+      hero: {
+        badge: "#1 Pasqyra Inteligjente në Kosovë",
+        title1: "Shihni Më Shumë Se",
+        title2: "Thjesht Reflektimin.",
+        subtitle: "Vision24 sjell të ardhmen në shtëpinë tuaj. Ekran me definicion të lartë i fshehur pas xhamit premium, me standarde evropiane.",
+        cta1: "Zbuloni Modelet",
+      },
+      featuresSection: {
+        title: "Teknologji e Padukshme.",
+        subtitle: "E mençur kur ju duhet. Pasqyrë perfekte kur nuk ju duhet.",
+        f1Title: "Ekran 'Vanishing'",
+        f1Desc: "Ndryshe nga pasqyrat e lira, ekrani ynë është plotësisht i padukshëm kur fiket. Pa korniza gri, vetëm reflektim i pastër.",
+        f2Title: "Rezistente ndaj Ujit (IP65)",
+        f2Desc: "E inxhinieruar për t'i rezistuar lagështisë dhe avullit. E përkryer për tualetin tuaj pa asnjë rrezik.",
+        f3Title: "Prodhuar për Kosovën",
+        f3Desc: "Dizajnuar në Prishtinë. Ne ofrojmë instalim lokal, garanci 2-vjeçare dhe mbështetje 24/7 në Shqip/Anglisht."
+      },
+      interfaceSection: {
+        title: "Jeta Juaj. Në Një Shikim.",
+        subtitle: "Personalizoni ekranin me informacionet që ju duhen.",
+        w1: "Moti",
+        w2: "Kalendari",
+        w3: "Spotify",
+        w4: "Lajmet"
+      },
+      productsSection: {
+        title: "Koleksioni",
+        subtitle: "Zgjidhni stilin që i përshtatet hapësirës suaj.",
+        btn: "Porosit & Personalizo",
+        tag1: "Më e shitura",
+        tag2: "Perfekte për Makeup",
+        tag3: "Trup i plotë"
+      },
+      qualitySection: {
+        title: "Pse Vision24 është ndryshe?",
+        p1: "Importet e lira përdorin xham standard që e bën ekranin të duket 'i zbehtë' ose gri. Vision24 përdor xham pasqyre dielektrik premium.",
+        p2: "Kur ekrani është i fikur, duket saktësisht si një pasqyrë luksoze. Kur ndizet, informacioni shfaqet në mënyrë magjike në sipërfaqe.",
+        warranty: "Garanci Lokale",
+        satisfaction: "Kënaqshmëri"
+      },
+      form: {
+        title: "Porosit",
+        desc: "Plotësoni formën më poshtë. Ne do t'ju telefonojmë brenda 24 orëve për detajet e dërgesës. Pagesa bëhet pas pranimit.",
+        name: "Emri dhe Mbiemri",
+        phone: "Numri i Telefonit (+383)",
+        city: "Qyteti",
+        btn: "Dërgo Kërkesën"
+      },
+      productsList: [
+        {
+          id: 1,
+          name: "Vision24 Grand",
+          price: "€650",
+          features: ["32-inch Ekran i Padukshëm", "Sistem LED True-Light™", "Shiko YouTube/Netflix"],
+          image: "https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=800"
+        },
+        {
+          id: 2,
+          name: "Vision24 Vanity",
+          price: "€450",
+          features: ["Moti & Lajmet Inteligjente", "Teknologji Anti-Mjegull", "Dritë e Përparme e Rregullueshme"],
+          image: "https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&q=80&w=800"
+        },
+        {
+          id: 3,
+          name: "Vision24 Wardrobe",
+          price: "€890",
+          features: ["Xham me Lartësi të Plotë", "Planifikues i Veshjes Ditore", "Widget për Fitness/Gym"],
+          image: "https://images.unsplash.com/photo-1618219944342-824e40a13285?auto=format&fit=crop&q=80&w=800"
+        }
+      ]
+    }
+  };
+
+  const t = content[lang];
+  const products = t.productsList;
+
+  const openOrderForm = (productName) => {
+    setSelectedProduct(productName);
+    setIsOrderModalOpen(true);
+  };
+
+  const toggleLang = () => {
+    setLang(prev => prev === 'en' ? 'sq' : 'en');
+  };
+
+  return (
+    <div className="min-h-screen bg-neutral-950 text-white font-sans selection:bg-cyan-500 selection:text-white pb-20">
+      
+      {/* --- Navigation --- */}
+      <nav className="fixed w-full z-40 bg-neutral-950/80 backdrop-blur-md border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center gap-3">
+              {/* LOGO IMAGE HERE */}
+              <img src="/vision24Logo.png" alt="Vision24 Logo" className="h-10 w-auto object-contain" />
+              {/* <span className="text-2xl font-bold tracking-wide"></span> */}
+            </div>
+            
+            <div className="hidden md:flex space-x-8 items-center">
+              <a href="#features" className="text-gray-300 hover:text-white transition">{t.nav.features}</a>
+              <a href="#products" className="text-gray-300 hover:text-white transition">{t.nav.models}</a>
+              <a href="#quality" className="text-gray-300 hover:text-white transition">{t.nav.quality}</a>
+              
+              {/* Language Switcher Desktop */}
+              <button 
+                onClick={toggleLang}
+                className="flex items-center gap-2 text-sm font-medium border border-white/20 px-3 py-1 rounded-full hover:bg-white/10 transition"
+              >
+                <Globe size={16} /> {lang === 'en' ? 'SQ' : 'EN'}
+              </button>
+
+              <button 
+                onClick={() => openOrderForm('General Inquiry')}
+                className="bg-cyan-500 text-black px-5 py-2 rounded-full font-bold hover:bg-cyan-400 transition"
+              >
+                {t.nav.getStarted}
+              </button>
+            </div>
+
+            <div className="md:hidden flex items-center gap-4">
+               {/* Language Switcher Mobile */}
+               <button 
+                onClick={toggleLang}
+                className="flex items-center gap-1 text-sm font-medium border border-white/20 px-2 py-1 rounded-full"
+              >
+                <Globe size={14} /> {lang.toUpperCase()}
+              </button>
+
+              <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white">
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {isMenuOpen && (
+          <div className="md:hidden bg-neutral-900 border-b border-white/10">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              <a href="#features" className="block px-3 py-2 text-gray-300">{t.nav.features}</a>
+              <a href="#products" className="block px-3 py-2 text-gray-300">{t.nav.models}</a>
+              <button 
+                 onClick={() => { openOrderForm('General Inquiry'); setIsMenuOpen(false); }}
+                 className="block w-full text-left px-3 py-2 text-cyan-400 font-bold"
+              >
+                {t.nav.getStarted}
+              </button>
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* --- Hero Section --- */}
+      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-[120px] -z-10 opacity-50"></div>
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[120px] -z-10 opacity-50"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 text-sm mb-8 font-medium">
+            <Star size={14} className="mr-2" /> {t.hero.badge}
+          </div>
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8">
+            {t.hero.title1} <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">{t.hero.title2}</span>
+          </h1>
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+            {t.hero.subtitle}
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="#products" className="bg-white text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-200 transition flex items-center justify-center">
+              {t.hero.cta1} <ChevronRight className="ml-2" size={20} />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* --- Features Grid --- */}
+      <section id="features" className="py-24 bg-neutral-900/30 border-y border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">{t.featuresSection.title}</h2>
+            <p className="text-gray-400">{t.featuresSection.subtitle}</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-10">
+            <FeatureCard 
+              icon={<Monitor className="text-cyan-400" size={32} />}
+              title={t.featuresSection.f1Title}
+              desc={t.featuresSection.f1Desc}
+            />
+            <FeatureCard 
+              icon={<Wifi className="text-cyan-400" size={32} />}
+              title={t.featuresSection.f2Title}
+              desc={t.featuresSection.f2Desc}
+            />
+            <FeatureCard 
+              icon={<MapPin className="text-cyan-400" size={32} />}
+              title={t.featuresSection.f3Title}
+              desc={t.featuresSection.f3Desc}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* --- Interface / OS Preview --- */}
+      <section className="py-24 bg-neutral-950 overflow-hidden border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-4 text-center mb-16">
+          <h2 className="text-4xl font-bold mb-4">{t.interfaceSection.title}</h2>
+          <p className="text-gray-400">{t.interfaceSection.subtitle}</p>
+        </div>
+
+        {/* The Mirror UI Mockup */}
+        <div className="relative max-w-4xl mx-auto bg-neutral-900 rounded-3xl border-8 border-neutral-800 p-2 shadow-2xl">
+          {/* Reflection Effect */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent z-10 pointer-events-none rounded-2xl"></div>
+          
+          <div className="bg-black/80 rounded-2xl p-8 md:p-12 h-[500px] md:h-[600px] relative flex flex-col justify-between overflow-hidden">
+            {/* Background Image (The Reflection) */}
+            <img 
+               src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1000" 
+               className="absolute inset-0 w-full h-full object-cover opacity-30 blur-[2px]" 
+               alt="Reflection"
+            />
+
+            {/* UI Widgets Top */}
+            <div className="relative z-20 flex justify-between items-start text-white">
+              <div className="text-left">
+                <h3 className="text-6xl font-thin tracking-tighter mb-2">08:24</h3>
+                <p className="text-xl font-medium text-cyan-300">Monday, January 24</p>
+                <div className="mt-6 flex items-center gap-3 bg-black/40 backdrop-blur-md p-3 rounded-xl border border-white/10 w-fit">
+                   <div className="text-yellow-400"><Cloud size={20} fill="currentColor" /></div>
+                   <div>
+                     <p className="text-sm font-bold">{t.interfaceSection.w1}</p>
+                     <p className="text-xs text-gray-300">Prishtina, -2°C</p>
+                   </div>
+                </div>
+              </div>
+
+              <div className="text-right hidden md:block">
+                 <div className="bg-black/40 backdrop-blur-md p-4 rounded-xl border border-white/10 w-64">
+                    <div className="flex items-center gap-2 mb-2 text-cyan-400">
+                        <Calendar size={16} />
+                        <p className="text-sm font-bold">{t.interfaceSection.w2}</p>
+                    </div>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex justify-between"><span>09:00</span> <span className="text-gray-400">Meeting</span></div>
+                      <div className="flex justify-between"><span>13:30</span> <span className="text-gray-400">Gym</span></div>
+                      <div className="flex justify-between"><span>19:00</span> <span className="text-gray-400">Dinner</span></div>
+                    </div>
+                 </div>
+              </div>
+            </div>
+
+            {/* UI Widgets Bottom */}
+            <div className="relative z-20 flex justify-center">
+               <div className="bg-black/40 backdrop-blur-md px-6 py-4 rounded-full border border-white/10 flex items-center gap-6">
+                 <div className="flex flex-col items-center gap-1 cursor-pointer hover:text-cyan-400 transition">
+                    <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-black font-bold">
+                        <Music size={20} />
+                    </div>
+                    <span className="text-xs">{t.interfaceSection.w3}</span>
+                 </div>
+                 <div className="w-px h-8 bg-white/20"></div>
+                 <div className="flex flex-col items-center gap-1 cursor-pointer hover:text-cyan-400 transition">
+                    <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                        <Globe size={20} />
+                    </div>
+                    <span className="text-xs">{t.interfaceSection.w4}</span>
+                 </div>
+               </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* --- Product Showcase --- */}
+      <section id="products" className="py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">{t.productsSection.title}</h2>
+            <p className="text-gray-400">{t.productsSection.subtitle}</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {products.map((product, idx) => (
+              <div key={product.id} className="group bg-neutral-900 rounded-2xl overflow-hidden border border-white/10 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-900/20 transition duration-300">
+                <div className="h-72 overflow-hidden relative bg-gray-800">
+                  <img 
+                    src={product.image} 
+                    alt={product.name} 
+                    className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transform group-hover:scale-105 transition duration-700"
+                  />
+                  {/* Dynamic Tags */}
+                  <div className="absolute top-4 left-4 bg-cyan-500 text-black px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                     {idx === 0 ? t.productsSection.tag1 : idx === 1 ? t.productsSection.tag2 : t.productsSection.tag3}
+                  </div>
+                  <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-sm font-bold border border-white/10">
+                    {product.price}
+                  </div>
+                </div>
+                <div className="p-8">
+                  <h3 className="text-2xl font-bold mb-4">{product.name}</h3>
+                  <ul className="space-y-3 mb-8">
+                    {product.features.map((feat, i) => (
+                      <li key={i} className="flex items-center text-gray-400">
+                        <CheckCircle size={16} className="mr-3 text-cyan-500" /> {feat}
+                      </li>
+                    ))}
+                  </ul>
+                  <button 
+                    onClick={() => openOrderForm(product.name)}
+                    className="w-full py-4 rounded-xl bg-white text-black font-bold tracking-wide hover:bg-cyan-400 transition shadow-lg mt-4"
+                  >
+                    {t.productsSection.btn}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- Quality Assurance --- */}
+      <section id="quality" className="py-24 bg-white text-black">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center gap-16">
+          <div className="md:w-1/2">
+            <h2 className="text-4xl font-bold mb-6">{t.qualitySection.title}</h2>
+            <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+              {t.qualitySection.p1}
+            </p>
+            <p className="text-lg text-gray-700 mb-8">
+              {t.qualitySection.p2}
+            </p>
+            <div className="flex gap-8">
+               <div>
+                 <h4 className="text-3xl font-bold text-cyan-600">2 Year</h4>
+                 <p className="text-gray-600 font-medium">{t.qualitySection.warranty}</p>
+               </div>
+               <div>
+                 <h4 className="text-3xl font-bold text-cyan-600">100%</h4>
+                 <p className="text-gray-600 font-medium">{t.qualitySection.satisfaction}</p>
+               </div>
+            </div>
+          </div>
+          <div className="md:w-1/2 relative">
+             <div className="absolute -inset-4 bg-cyan-200 rounded-full blur-xl opacity-50"></div>
+             <img 
+               src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800" 
+               alt="Quality Detail" 
+               className="relative rounded-2xl shadow-2xl"
+             />
+          </div>
+        </div>
+      </section>
+
+      {/* --- Footer --- */}
+      <footer className="py-12 bg-neutral-950 border-t border-white/10 text-center md:text-left">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+          <div className="mb-6 md:mb-0">
+             {/* LOGO IMAGE HERE TOO */}
+             <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+                 <img src="/vision24Logo.png" alt="Vision24 Logo" className="h-8 w-auto object-contain" />
+                 <span className="text-2xl font-bold text-white tracking-wide">Vision24</span>
+             </div>
+            <p className="text-gray-500 text-sm mt-2">Prishtina, Kosova</p>
+            <p className="text-gray-500 text-sm">+383 44 123 456</p>
+          </div>
+          <div className="flex space-x-8 justify-center">
+            <a href="#" className="text-gray-400 hover:text-cyan-400 transition">Instagram</a>
+            <a href="#" className="text-gray-400 hover:text-cyan-400 transition">Facebook</a>
+            <a href="#" className="text-gray-400 hover:text-cyan-400 transition">WhatsApp</a>
+          </div>
+        </div>
+      </footer>
+
+      {/* --- Floating WhatsApp Button --- */}
+      <a 
+        href="https://wa.me/38344123456" // Replace with your actual number
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-transform hover:scale-110 flex items-center justify-center border-4 border-neutral-900"
+      >
+        <MessageCircle size={32} />
+      </a>
+
+      {/* --- ORDER MODAL --- */}
+      {isOrderModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={() => setIsOrderModalOpen(false)}
+          ></div>
+          <div className="bg-neutral-900 border border-white/10 rounded-2xl p-8 max-w-md w-full relative z-10 shadow-2xl">
+            <button 
+              onClick={() => setIsOrderModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+            >
+              <X size={24} />
+            </button>
+            
+            <h3 className="text-2xl font-bold mb-2">{t.form.title}: {selectedProduct}</h3>
+            <p className="text-gray-400 mb-6 text-sm">
+              {t.form.desc}
+            </p>
+            
+            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.form.name}</label>
+                <input type="text" className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500" placeholder="Agim Gashi" />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.form.phone}</label>
+                <input type="tel" className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500" placeholder="044 123 123" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.form.city}</label>
+                <select className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500">
+                  <option>Prishtina</option>
+                  <option>Prizren</option>
+                  <option>Peja</option>
+                  <option>Gjakova</option>
+                  <option>Ferizaj</option>
+                  <option>Gjilan</option>
+                  <option>Mitrovica</option>
+                  <option>Other</option>
+                </select>
+              </div>
+
+              <button className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-4 rounded-xl mt-4 flex items-center justify-center gap-2 transition">
+                <Send size={18} /> {t.form.btn}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+};
+
+// Helper Component
+const FeatureCard = ({ icon, title, desc }) => (
+  <div className="p-8 rounded-2xl bg-neutral-900 border border-white/5 hover:border-cyan-500/30 transition duration-300">
+    <div className="mb-6 bg-neutral-950 w-14 h-14 rounded-xl flex items-center justify-center border border-white/10 shadow-lg">
+      {icon}
+    </div>
+    <h3 className="text-xl font-bold mb-3">{title}</h3>
+    <p className="text-gray-400 leading-relaxed">{desc}</p>
+  </div>
+);
+
+export default App;
