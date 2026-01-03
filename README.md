@@ -57,4 +57,4 @@ Email: info@vision24.ks (Example)
 
 Phone: +383 44 123 456
 
-© 2026 Vision24. All rights reserved.
+© 2026 Vision24. All rights reserved. F
