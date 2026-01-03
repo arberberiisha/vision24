@@ -7,14 +7,15 @@ const App = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [lang, setLang] = useState('en');
 
-  // Lock body scroll when menu/modal is open
+  // FIX: Only lock scroll when Order Modal is open. 
+  // We do NOT lock for Menu to prevent the "jump" glitch on Windows phones/laptops.
   useEffect(() => {
-    if (isMenuOpen || isOrderModalOpen) {
+    if (isOrderModalOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
-  }, [isMenuOpen, isOrderModalOpen]);
+  }, [isOrderModalOpen]);
 
   const content = {
     en: {
@@ -223,8 +224,19 @@ const App = () => {
                 {lang.toUpperCase()}
               </button>
 
-              <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white p-2">
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              <button 
+                onClick={() => setIsMenuOpen(!isMenuOpen)} 
+                className="text-white p-2 relative z-50 rounded-full hover:bg-white/10 transition-colors"
+                aria-label="Toggle Menu"
+              >
+                {/* Container rotates when opened */}
+                <div className={`transition-transform duration-300 ease-in-out ${isMenuOpen ? 'rotate-90' : 'rotate-0'}`}>
+                  {isMenuOpen ? (
+                    <X size={28} strokeWidth={2.5} /> 
+                  ) : (
+                    <Menu size={28} strokeWidth={2.5} />
+                  )}
+                </div>
               </button>
             </div>
           </div>
