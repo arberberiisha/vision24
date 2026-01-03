@@ -185,7 +185,7 @@ const App = () => {
     <div className="min-h-screen bg-neutral-950 text-white font-sans selection:bg-cyan-500 selection:text-white pb-20 overflow-x-hidden">
       
       {/* --- Navigation --- */}
-      <nav className="fixed w-full z-40 bg-neutral-950/80 backdrop-blur-md border-b border-white/10">
+      <nav className="fixed w-full z-40 bg-neutral-950/90 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
@@ -229,7 +229,6 @@ const App = () => {
                 className="text-white p-2 relative z-50 rounded-full hover:bg-white/10 transition-colors"
                 aria-label="Toggle Menu"
               >
-                {/* Container rotates when opened */}
                 <div className={`transition-transform duration-300 ease-in-out ${isMenuOpen ? 'rotate-90' : 'rotate-0'}`}>
                   {isMenuOpen ? (
                     <X size={28} strokeWidth={2.5} /> 
@@ -243,14 +242,15 @@ const App = () => {
         </div>
 
         {/* Mobile Full Screen Menu */}
+        {/* FIX: justify-start and pt-32 ensures items are below the logo */}
         {isMenuOpen && (
-          <div className="fixed inset-0 z-30 bg-neutral-950 flex flex-col items-center justify-center space-y-8 animate-in fade-in duration-200">
-            <a href="#features" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300">{t.nav.features}</a>
-            <a href="#products" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300">{t.nav.models}</a>
-            <a href="#quality" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300">{t.nav.quality}</a>
+          <div className="fixed inset-0 z-30 bg-neutral-950 flex flex-col items-center justify-start pt-32 space-y-8 animate-in fade-in duration-200">
+            <a href="#features" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.features}</a>
+            <a href="#products" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.models}</a>
+            <a href="#quality" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.quality}</a>
             <button 
                onClick={() => openOrderForm('General Inquiry')}
-               className="text-xl bg-cyan-500 text-black px-8 py-3 rounded-full font-bold"
+               className="text-xl bg-cyan-500 text-black px-8 py-3 rounded-full font-bold shadow-lg shadow-cyan-500/20"
             >
               {t.nav.getStarted}
             </button>
