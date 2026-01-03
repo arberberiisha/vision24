@@ -7,8 +7,7 @@ const App = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [lang, setLang] = useState('en');
 
-  // FIX: Only lock scroll when Order Modal is open. 
-  // We do NOT lock for Menu to prevent the "jump" glitch on Windows phones/laptops.
+  // FIX: Only lock scroll when Order Modal is open.
   useEffect(() => {
     if (isOrderModalOpen) {
       document.body.style.overflow = 'hidden';
@@ -51,7 +50,7 @@ const App = () => {
         btn: "Customize & Order",
         tag1: "Best Seller",
         tag2: "Perfect for Makeup",
-        tag3: "Full Body"
+        tag3: "Personalized" // Changed tag
       },
       qualitySection: {
         title: "Why Vision24 is Different.",
@@ -85,10 +84,11 @@ const App = () => {
         },
         {
           id: 3,
-          name: "Vision24 Wardrobe",
-          price: "€890",
-          features: ["Xham me Lartësi të Plotë", "Planifikues i Veshjes Ditore", "Widget për Fitness/Gym"],
-          image: "https://images.unsplash.com/photo-1618219944342-824e40a13285?auto=format&fit=crop&q=80&w=800"
+          // NEW PRODUCT: Vision24 Signature (The Custom One)
+          name: "Vision24 Signature",
+          price: "€390", 
+          features: ["Custom Glowing Name", "24-inch Smart LED", "Perfect for Kids/Gifts"], 
+          image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=800"
         }
       ]
     },
@@ -125,7 +125,7 @@ const App = () => {
         btn: "Porosit & Personalizo",
         tag1: "Më e shitura",
         tag2: "Perfekte për Makeup",
-        tag3: "Trup i plotë"
+        tag3: "E Personalizuar" // Changed tag
       },
       qualitySection: {
         title: "Pse Vision24 është ndryshe?",
@@ -159,10 +159,11 @@ const App = () => {
         },
         {
           id: 3,
-          name: "Vision24 Wardrobe",
-          price: "€890",
-          features: ["Xham me Lartësi të Plotë", "Planifikues i Veshjes Ditore", "Widget për Fitness/Gym"],
-          image: "https://images.unsplash.com/photo-1618219944342-824e40a13285?auto=format&fit=crop&q=80&w=800"
+          // NEW PRODUCT: Vision24 Signature (The Custom One - Albanian)
+          name: "Vision24 Signature",
+          price: "€390",
+          features: ["Emër i Ndriçuar Personal", "Ekran Smart 24-inç", "Ideale për Fëmijë/Dhurata"],
+          image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=800"
         }
       ]
     }
@@ -242,9 +243,9 @@ const App = () => {
         </div>
 
         {/* Mobile Full Screen Menu */}
-        {/* UPDATED: bg-neutral-950/90 (90% opacity) and backdrop-blur-md */}
+        {/* FIXED: bg-black/60 (60% opacity) allows backdrop-blur-xl to show the blurred body content */}
         {isMenuOpen && (
-          <div className="fixed inset-0 z-30 bg-neutral-950/90 backdrop-blur-md flex flex-col items-center justify-start pt-32 space-y-8 animate-in fade-in duration-200">
+          <div className="fixed inset-0 z-30 bg-black/60 backdrop-blur-xl flex flex-col items-center justify-start pt-32 space-y-8 animate-in fade-in duration-200">
             <a href="#features" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.features}</a>
             <a href="#products" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.models}</a>
             <a href="#quality" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.quality}</a>
