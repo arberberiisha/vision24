@@ -497,7 +497,7 @@ const App = () => {
              <div className="relative rounded-2xl shadow-2xl overflow-hidden border border-white/10">
                 {/* Image Switch */}
                 <img 
-                  src={isQualityMirrorActive ? "/bathroomOn.jpg" : "/bathroomOff.jpg"} 
+                  src={isQualityMirrorActive ? "/bathroomOn.png" : "/bathroomOff.jpg"} 
                   alt="Vision24 Quality" 
                   className="w-full h-auto object-cover transition-opacity duration-700 ease-in-out"
                 />
