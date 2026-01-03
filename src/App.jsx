@@ -22,7 +22,7 @@ const App = () => {
   const handleOrderSubmit = (e) => {
     e.preventDefault();
     const message = `Pershendetje Vision24! 👋%0A%0ADua te bej nje porosi:%0A---------------------------%0A🖼️ Modeli: ${selectedProduct}%0A👤 Emri: ${formData.name}%0A📍 Qyteti: ${formData.city}%0A📱 Tel: ${formData.phone}%0A---------------------------%0A%0AJu lutem me konfirmoni. Faleminderit!`;
-    const whatsappUrl = `https://wa.me/38344123456?text=${message}`;
+    const whatsappUrl = `https://wa.me/38344722066?text=${message}`;
     window.open(whatsappUrl, '_blank');
     setIsOrderModalOpen(false);
   };
@@ -489,7 +489,7 @@ const App = () => {
                  <span className="text-2xl font-bold text-white tracking-wide">Vision24</span>
              </div>
             <p className="text-gray-500 text-sm mt-2">Prishtina, Kosovo</p>
-            <p className="text-gray-500 text-sm">+383 44 123 456</p>
+            <p className="text-gray-500 text-sm">+383 44 722 066</p>
           </div>
           <div className="flex space-x-8 justify-center">
             <a href="#" className="text-gray-400 hover:text-cyan-400 transition">Instagram</a>
@@ -501,7 +501,7 @@ const App = () => {
 
       {/* --- Floating WhatsApp Button --- */}
       <a 
-        href="https://wa.me/38344123456" 
+        href="https://wa.me/38344722066" 
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-3 md:p-4 rounded-full shadow-2xl transition-transform hover:scale-110 flex items-center justify-center border-4 border-neutral-900 active:scale-90"
@@ -552,7 +552,7 @@ const App = () => {
                   onChange={handleInputChange}
                   required
                   className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition" 
-                  placeholder="044 123 123" 
+                  placeholder="044 722 066" 
                 />
               </div>
 
