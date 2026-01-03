@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Monitor, Wifi, Star, MapPin, ChevronRight, Menu, X, CheckCircle, Send, Globe, MessageCircle, Music, Cloud, Calendar, Power } from 'lucide-react';
+import { Layers, Droplets, Star, MapPin, ChevronRight, Menu, X, CheckCircle, Send, Globe, MessageCircle, Music, Cloud, Calendar, Power } from 'lucide-react';
 
 // --- SUB-COMPONENT FOR INDIVIDUAL PRODUCT CARDS ---
 const ProductCard = ({ product, t, onOrder, btnTextOn, btnTextOff }) => {
@@ -65,7 +65,7 @@ const App = () => {
   // State for the Main Interface Preview
   const [isMainMirrorActive, setIsMainMirrorActive] = useState(false);
   
-  // NEW: State for the Quality Section Mirror
+  // State for the Quality Section Mirror
   const [isQualityMirrorActive, setIsQualityMirrorActive] = useState(false);
   
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -112,12 +112,12 @@ const App = () => {
       featuresSection: {
         title: "Technology That Disappears.",
         subtitle: "Smart when you need it. A perfect mirror when you don't.",
-        f1Title: "Vanishing Display",
-        f1Desc: "Unlike cheap mirrors, our screen is completely invisible when turned off. No grey borders, just pure reflection.",
-        f2Title: "Bathroom Ready (IP65)",
-        f2Desc: "Engineered to withstand humidity and steam. Perfect for your shower or vanity area without risk.",
-        f3Title: "Made for Kosova",
-        f3Desc: "Designed in Prishtina. We offer local installation, 2-year warranty, and 24/7 Albanian/English support."
+        f1Title: "Dielectric Glass",
+        f1Desc: "We use premium 'vanishing' glass. When the display is off, it looks like deep, luxurious silver. No grey borders, just pure reflection.",
+        f2Title: "IP65 Water Sealed",
+        f2Desc: "Engineered specifically for humid bathrooms. Our electronics are fully sealed against steam and splashes. 100% Safe.",
+        f3Title: "Local Support 🇽🇰",
+        f3Desc: "Designed in Prishtina. No waiting weeks for shipping or parts. We offer instant local installation and 24/7 support."
       },
       interfaceSection: {
         title: "Experience the Magic.",
@@ -191,12 +191,12 @@ const App = () => {
       featuresSection: {
         title: "Teknologji e Padukshme.",
         subtitle: "E mençur kur ju duhet. Pasqyrë perfekte kur nuk ju duhet.",
-        f1Title: "Ekran 'Vanishing'",
-        f1Desc: "Ndryshe nga pasqyrat e lira, ekrani ynë është plotësisht i padukshëm kur fiket. Pa korniza gri, vetëm reflektim i pastër.",
-        f2Title: "Rezistente ndaj Ujit (IP65)",
-        f2Desc: "E inxhinieruar për t'i rezistuar lagështisë dhe avullit. E përkryer për tualetin tuaj pa asnjë rrezik.",
-        f3Title: "Prodhuar për Kosovën",
-        f3Desc: "Dizajnuar në Prishtinë. Ne ofrojmë instalim lokal, garanci 2-vjeçare dhe mbështetje 24/7 në Shqip/Anglisht."
+        f1Title: "Xham Dielektrik",
+        f1Desc: "Përdorim xham special 'vanishing'. Kur ekrani është i fikur, duket si argjend i thellë dhe luksoz. Pa korniza gri, vetëm reflektim i pastër.",
+        f2Title: "IP65 Rezistente ndaj Ujit",
+        f2Desc: "E inxhinieruar posaçërisht për tualete me lagështi. Elektronika jonë është plotësisht e mbyllur ndaj avullit. 100% e Sigurt.",
+        f3Title: "Mbështetje Lokale 🇽🇰",
+        f3Desc: "Dizajnuar në Prishtinë. Mos prisni javë të tëra për dërgesa nga jashtë. Ne ofrojmë instalim të menjëhershëm dhe servis lokal."
       },
       interfaceSection: {
         title: "Provojeni Magjinë.",
@@ -284,9 +284,14 @@ const App = () => {
       <nav className={`fixed w-full z-40 transition-colors duration-300 border-b ${isMenuOpen ? 'bg-transparent border-transparent' : 'bg-neutral-950/90 backdrop-blur-md border-white/10'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-3">
+            
+            {/* UPDATED: LOGO NOW SCROLLS TO TOP */}
+            <div 
+              className="flex items-center gap-3 cursor-pointer"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
               <img src="/vision24Logo.png" alt="Vision24 Logo" className="h-8 w-auto object-contain" />
-              <span className="text-xl md:text-2xl font-bold tracking-wide">Vision24</span>
+              {/* <span className="text-xl md:text-2xl font-bold tracking-wide">Vision24</span> */}
             </div>
             
             <div className="hidden md:flex space-x-8 items-center">
@@ -383,12 +388,12 @@ const App = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
             <FeatureCard 
-              icon={<Monitor className="text-cyan-400" size={32} />}
+              icon={<Layers className="text-cyan-400" size={32} />}
               title={t.featuresSection.f1Title}
               desc={t.featuresSection.f1Desc}
             />
             <FeatureCard 
-              icon={<Wifi className="text-cyan-400" size={32} />}
+              icon={<Droplets className="text-cyan-400" size={32} />}
               title={t.featuresSection.f2Title}
               desc={t.featuresSection.f2Desc}
             />
@@ -492,7 +497,7 @@ const App = () => {
              <div className="relative rounded-2xl shadow-2xl overflow-hidden border border-white/10">
                 {/* Image Switch */}
                 <img 
-                  src={isQualityMirrorActive ? "/bathroomOn.png" : "/bathroomOff.jpg"} 
+                  src={isQualityMirrorActive ? "/bathroomOn.jpg" : "/bathroomOff.jpg"} 
                   alt="Vision24 Quality" 
                   className="w-full h-auto object-cover transition-opacity duration-700 ease-in-out"
                 />
@@ -521,7 +526,7 @@ const App = () => {
              {/* Logo */}
              <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
                  <img src="/vision24Logo.png" alt="Vision24 Logo" className="h-8 w-auto object-contain" />
-                 <span className="text-2xl font-bold text-white tracking-wide">Vision24</span>
+                 {/* <span className="text-2xl font-bold text-white tracking-wide">Vision24</span> */}
              </div>
             <p className="text-gray-500 text-sm mt-2">Prishtina, Kosovo</p>
             <p className="text-gray-500 text-sm">+383 44 722 066</p>
