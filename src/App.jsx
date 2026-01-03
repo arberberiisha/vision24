@@ -7,14 +7,41 @@ const App = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [lang, setLang] = useState('en');
 
-  // FIX: Only lock scroll when Order Modal is open.
+  // Form State - To capture user input
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    city: 'Prishtina'
+  });
+
+  // Update form values when user types
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // SEND TO WHATSAPP FUNCTION
+  const handleOrderSubmit = (e) => {
+    e.preventDefault(); // Stop page refresh
+    
+    // 1. Create the message
+    const message = `Pershendetje Vision24! 👋%0A%0ADua te bej nje porosi:%0A---------------------------%0A🖼️ Modeli: ${selectedProduct}%0A👤 Emri: ${formData.name}%0A📍 Qyteti: ${formData.city}%0A📱 Tel: ${formData.phone}%0A---------------------------%0A%0AJu lutem me konfirmoni. Faleminderit!`;
+
+    // 2. Open WhatsApp
+    const whatsappUrl = `https://wa.me/38344123456?text=${message}`;
+    
+    window.open(whatsappUrl, '_blank');
+    setIsOrderModalOpen(false);
+  };
+
+  // FIX: Only lock scroll when Order Modal is open OR Menu is open
   useEffect(() => {
-    if (isOrderModalOpen) {
+    if (isOrderModalOpen || isMenuOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
-  }, [isOrderModalOpen]);
+  }, [isOrderModalOpen, isMenuOpen]);
 
   const content = {
     en: {
@@ -50,7 +77,7 @@ const App = () => {
         btn: "Customize & Order",
         tag1: "Best Seller",
         tag2: "Perfect for Makeup",
-        tag3: "Personalized" // Changed tag
+        tag3: "Personalized"
       },
       qualitySection: {
         title: "Why Vision24 is Different.",
@@ -61,11 +88,11 @@ const App = () => {
       },
       form: {
         title: "Order",
-        desc: "Fill out the form below. We will call you within 24 hours to confirm delivery details. Payment is upon delivery.",
+        desc: "Fill out the form below. It will open WhatsApp to send your details directly to our sales team.",
         name: "Full Name",
         phone: "Phone Number (+383)",
         city: "City",
-        btn: "Submit Order Request"
+        btn: "Order on WhatsApp"
       },
       productsList: [
         {
@@ -84,10 +111,9 @@ const App = () => {
         },
         {
           id: 3,
-          // NEW PRODUCT: Vision24 Signature (The Custom One)
           name: "Vision24 Signature",
-          price: "€390", 
-          features: ["Custom Glowing Name", "24-inch Smart LED", "Perfect for Kids/Gifts"], 
+          price: "€390",
+          features: ["Emër i Ndriçuar Personal", "Ekran Smart 24-inç", "Ideale për Fëmijë/Dhurata"],
           image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=800"
         }
       ]
@@ -125,7 +151,7 @@ const App = () => {
         btn: "Porosit & Personalizo",
         tag1: "Më e shitura",
         tag2: "Perfekte për Makeup",
-        tag3: "E Personalizuar" // Changed tag
+        tag3: "E Personalizuar"
       },
       qualitySection: {
         title: "Pse Vision24 është ndryshe?",
@@ -136,11 +162,11 @@ const App = () => {
       },
       form: {
         title: "Porosit",
-        desc: "Plotësoni formën më poshtë. Ne do t'ju telefonojmë brenda 24 orëve për detajet e dërgesës. Pagesa bëhet pas pranimit.",
+        desc: "Plotësoni formën më poshtë. Do të hapet WhatsApp për të dërguar detajet direkt tek ekipi ynë.",
         name: "Emri dhe Mbiemri",
         phone: "Numri i Telefonit (+383)",
         city: "Qyteti",
-        btn: "Dërgo Kërkesën"
+        btn: "Porosit në WhatsApp"
       },
       productsList: [
         {
@@ -159,7 +185,6 @@ const App = () => {
         },
         {
           id: 3,
-          // NEW PRODUCT: Vision24 Signature (The Custom One - Albanian)
           name: "Vision24 Signature",
           price: "€390",
           features: ["Emër i Ndriçuar Personal", "Ekran Smart 24-inç", "Ideale për Fëmijë/Dhurata"],
@@ -242,10 +267,9 @@ const App = () => {
           </div>
         </div>
 
-        {/* Mobile Full Screen Menu */}
-        {/* FIXED: bg-black/60 (60% opacity) allows backdrop-blur-xl to show the blurred body content */}
+        {/* Mobile Full Screen Menu - FIXED: SOLID BACKGROUND */}
         {isMenuOpen && (
-          <div className="fixed inset-0 z-30 bg-black/60 backdrop-blur-xl flex flex-col items-center justify-start pt-32 space-y-8 animate-in fade-in duration-200">
+          <div className="fixed inset-0 z-30 bg-neutral-950 flex flex-col items-center justify-start pt-32 space-y-8 animate-in fade-in duration-200">
             <a href="#features" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.features}</a>
             <a href="#products" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.models}</a>
             <a href="#quality" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.quality}</a>
@@ -492,7 +516,7 @@ const App = () => {
         <MessageCircle size={28} />
       </a>
 
-      {/* --- ORDER MODAL --- */}
+      {/* --- ORDER MODAL (UPDATED FOR WHATSAPP) --- */}
       {isOrderModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div 
@@ -512,20 +536,41 @@ const App = () => {
               {t.form.desc}
             </p>
             
-            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-4" onSubmit={handleOrderSubmit}>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">{t.form.name}</label>
-                <input type="text" className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="Agim Gashi" />
+                <input 
+                  type="text" 
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition" 
+                  placeholder="Agim Gashi" 
+                />
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">{t.form.phone}</label>
-                <input type="tel" className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="044 123 123" />
+                <input 
+                  type="tel" 
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition" 
+                  placeholder="044 123 123" 
+                />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">{t.form.city}</label>
-                <select className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition">
+                <select 
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  className="w-full bg-neutral-800 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition"
+                >
                   <option>Prishtina</option>
                   <option>Prizren</option>
                   <option>Peja</option>
@@ -537,8 +582,8 @@ const App = () => {
                 </select>
               </div>
 
-              <button className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-4 rounded-xl mt-4 flex items-center justify-center gap-2 transition active:scale-95 shadow-lg shadow-cyan-500/20">
-                <Send size={18} /> {t.form.btn}
+              <button className="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-4 rounded-xl mt-4 flex items-center justify-center gap-2 transition active:scale-95 shadow-lg shadow-green-500/20">
+                <MessageCircle size={20} /> {t.form.btn}
               </button>
             </form>
           </div>
