@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Monitor, Wifi, Star, MapPin, ChevronRight, Menu, X, CheckCircle, Send, Globe, MessageCircle, Music, Cloud, Calendar, Power } from 'lucide-react';
 
-// --- NEW SUB-COMPONENT FOR INDIVIDUAL PRODUCT CARDS ---
+// --- SUB-COMPONENT FOR INDIVIDUAL PRODUCT CARDS ---
 const ProductCard = ({ product, t, onOrder, btnTextOn, btnTextOff }) => {
   const [isOn, setIsOn] = useState(false); // Start OFF by default
 
@@ -13,14 +13,12 @@ const ProductCard = ({ product, t, onOrder, btnTextOn, btnTextOff }) => {
         className="h-64 md:h-72 overflow-hidden relative bg-gray-800 cursor-pointer"
         onClick={() => setIsOn(!isOn)}
       >
-        {/* The Image Switcher */}
         <img 
           src={isOn ? product.imageOn : product.imageOff} 
           alt={product.name} 
           className="w-full h-full object-cover transition-opacity duration-700 ease-in-out"
         />
         
-        {/* Toggle Button (Centered at bottom of image) */}
         <button 
           onClick={(e) => {
             e.stopPropagation();
@@ -32,7 +30,6 @@ const ProductCard = ({ product, t, onOrder, btnTextOn, btnTextOff }) => {
           {isOn ? btnTextOff : btnTextOn}
         </button>
 
-        {/* Dynamic Tags */}
         <div className="absolute top-4 left-4 bg-cyan-500 text-black px-3 py-1 rounded-full text-xs font-bold shadow-lg z-20">
            {product.tag}
         </div>
@@ -41,7 +38,6 @@ const ProductCard = ({ product, t, onOrder, btnTextOn, btnTextOff }) => {
         </div>
       </div>
 
-      {/* Product Details */}
       <div className="p-6 md:p-8">
         <h3 className="text-2xl font-bold mb-4">{product.name}</h3>
         <ul className="space-y-3 mb-8">
@@ -68,6 +64,9 @@ const App = () => {
   
   // State for the Main Interface Preview
   const [isMainMirrorActive, setIsMainMirrorActive] = useState(false);
+  
+  // NEW: State for the Quality Section Mirror
+  const [isQualityMirrorActive, setIsQualityMirrorActive] = useState(false);
   
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [lang, setLang] = useState('en');
@@ -159,9 +158,8 @@ const App = () => {
           name: "Vision24 Grand",
           price: "€650",
           features: ["32-inch Invisible Display", "True-Light™ LED System", "Watch YouTube/Netflix"],
-          // UPDATED: Added ImageOFF property
           imageOn: "/DifferentMirrorsOn.png",
-          imageOff: "/DifferentMirrorsOff.png" // Ensure this filename matches your folder!
+          imageOff: "/DifferentMirrorsOff.png"
         },
         {
           id: 2,
@@ -264,7 +262,6 @@ const App = () => {
 
   const t = content[lang];
   
-  // Inject tags and text into product list for the component
   const productsWithTags = t.productsList.map((p, index) => ({
     ...p,
     tag: index === 0 ? t.productsSection.tag1 : index === 1 ? t.productsSection.tag2 : t.productsSection.tag3
@@ -337,7 +334,7 @@ const App = () => {
           </div>
         </div>
 
-        {/* Mobile Full Screen Menu - WITH BLUR */}
+        {/* Mobile Full Screen Menu */}
         {isMenuOpen && (
           <div className="fixed inset-0 z-30 bg-black/60 backdrop-blur-xl flex flex-col items-center justify-start pt-32 space-y-8 animate-in fade-in duration-200">
             <a href="#features" onClick={() => setIsMenuOpen(false)} className="text-2xl font-bold text-gray-300 hover:text-cyan-400 transition">{t.nav.features}</a>
@@ -404,25 +401,22 @@ const App = () => {
         </div>
       </section>
 
-      {/* --- Interface / OS Preview (INTERACTIVE MAGIC SWITCH) --- */}
+      {/* --- Interface Preview (Magic Switch) --- */}
       <section className="py-16 md:py-24 bg-neutral-950 overflow-hidden border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 text-center mb-10 md:mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">{t.interfaceSection.title}</h2>
           <p className="text-gray-400 mb-6">{t.interfaceSection.subtitle}</p>
         </div>
 
-        {/* INTERACTIVE MIRROR CONTAINER */}
         <div 
-           className="relative max-w-sm md:max-w-4xl mx-auto bg-neutral-900 rounded-[2rem] border-8 border-neutral-800 p-1 md:p-2 shadow-2xl group"
-           onClick={() => setIsMainMirrorActive(!isMainMirrorActive)} // Click anywhere still works
+           className="relative max-w-sm md:max-w-4xl mx-auto bg-neutral-900 rounded-[2rem] border-8 border-neutral-800 p-1 md:p-2 shadow-2xl group cursor-pointer"
+           onClick={() => setIsMainMirrorActive(!isMainMirrorActive)} 
         >
-          {/* Reflection Effect */}
           <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent z-10 pointer-events-none rounded-[1.5rem]"></div>
           
-          {/* VISIBLE TOGGLE BUTTON */}
           <button 
             onClick={(e) => {
-              e.stopPropagation(); // Prevents clicking the container twice
+              e.stopPropagation(); 
               setIsMainMirrorActive(!isMainMirrorActive);
             }}
             className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-40 bg-white hover:bg-cyan-400 text-black px-6 py-3 rounded-full font-bold shadow-2xl flex items-center gap-2 transition-all active:scale-95"
@@ -431,8 +425,7 @@ const App = () => {
             {isMainMirrorActive ? t.interfaceSection.btnOff : t.interfaceSection.btnOn}
           </button>
 
-          <div className="bg-black rounded-[1.5rem] h-[450px] md:h-[600px] relative overflow-hidden cursor-pointer">
-            {/* THE MAGIC IMAGE SWITCH */}
+          <div className="bg-black rounded-[1.5rem] h-[450px] md:h-[600px] relative overflow-hidden">
             <img 
                src={isMainMirrorActive ? "/BigMirrorOn.png" : "/BigMirrorOff.png"} 
                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out" 
@@ -442,7 +435,7 @@ const App = () => {
         </div>
       </section>
 
-      {/* --- Product Showcase (NOW WITH INDIVIDUAL TOGGLES) --- */}
+      {/* --- Product Showcase --- */}
       <section id="products" className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -465,7 +458,7 @@ const App = () => {
         </div>
       </section>
 
-      {/* --- Quality Assurance --- */}
+      {/* --- Quality Assurance (UPDATED INTERACTIVE SECTION) --- */}
       <section id="quality" className="py-16 md:py-24 bg-white text-black">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center gap-12 md:gap-16">
           <div className="md:w-1/2">
@@ -487,14 +480,37 @@ const App = () => {
                </div>
             </div>
           </div>
-          <div className="md:w-1/2 relative">
-             <div className="absolute -inset-4 bg-cyan-200 rounded-full blur-xl opacity-50"></div>
-             <img 
-               src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800" 
-               alt="Quality Detail" 
-               className="relative rounded-2xl shadow-2xl"
-             />
+          
+          {/* Quality Section Image Container (Now Interactive) */}
+          <div 
+            className="md:w-1/2 relative group cursor-pointer"
+            onClick={() => setIsQualityMirrorActive(!isQualityMirrorActive)}
+          >
+             {/* Glow Effect */}
+             <div className="absolute -inset-4 bg-cyan-200/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition duration-500"></div>
+             
+             <div className="relative rounded-2xl shadow-2xl overflow-hidden border border-white/10">
+                {/* Image Switch */}
+                <img 
+                  src={isQualityMirrorActive ? "/bathroomOn.png" : "/bathroomOff.jpg"} 
+                  alt="Vision24 Quality" 
+                  className="w-full h-auto object-cover transition-opacity duration-700 ease-in-out"
+                />
+
+                {/* Button Overlay */}
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsQualityMirrorActive(!isQualityMirrorActive);
+                  }}
+                  className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white/90 hover:bg-cyan-400 text-black px-5 py-2 rounded-full text-sm font-bold shadow-xl flex items-center gap-2 transition-all active:scale-95"
+                >
+                  <Power size={16} className={isQualityMirrorActive ? "text-red-600" : "text-black"} />
+                  {isQualityMirrorActive ? t.interfaceSection.btnOff : t.interfaceSection.btnOn}
+                </button>
+             </div>
           </div>
+
         </div>
       </section>
 
